@@ -34,12 +34,12 @@ export const convertToMegaBytes = (number: number, unit: Unit): number => {
     }
 }
 
-export const getHoursToDownload = (downloadRate: string, downloadRateUnits: Unit, totalSize: string, totalSizeUnits: Unit): string => {
+export const getTimeToDownload = (downloadRate: string, downloadRateUnits: Unit, totalSize: string, totalSizeUnits: Unit) => {
     const downloadRateNumber: number = Number(downloadRate);
     const totalSizeNumber: number = Number(totalSize);
 
-    if (isNaN(downloadRateNumber) || isNaN(totalSizeNumber)) {
-        return '';
+    if (isNaN(downloadRateNumber) || isNaN(totalSizeNumber) || downloadRateNumber <= 0 || totalSizeNumber <= 0) {
+        return null;
     }
 
     const convertedDownloadRate: number = convertToMegaBytes(downloadRateNumber, downloadRateUnits);
@@ -53,5 +53,5 @@ export const getHoursToDownload = (downloadRate: string, downloadRateUnits: Unit
 
     const seconds = Math.floor((secondsToDownload % 3600) % 60);
 
-    return `${hours.toFixed()} hours ${minutes} minutes and ${seconds} seconds`;
+    return { hours: hours.toFixed(), minutes: minutes, seconds: seconds };
 }

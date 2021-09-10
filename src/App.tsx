@@ -5,13 +5,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './App.css';
 import Unit from './Unit';
-import { downloadUnits, getHoursToDownload as getTImeToDownload } from './utils';
+import { downloadUnits, getTimeToDownload } from './utils';
 
 function App() {
-  const [downloadRate, setDownloadRate] = useState('1.1');
+  const [downloadRate, setDownloadRate] = useState('');
   const [downloadRateUnits, setDownloadRateUnits] = useState(Unit.MEGABIT);
-  const [totalSize, setTotalSize] = useState('80');
+  const [totalSize, setTotalSize] = useState('');
   const [totalSizeUnits, setTotalSizeUnits] = useState(Unit.GIGABYTE);
+
+  const timeToDownload = getTimeToDownload(downloadRate, downloadRateUnits, totalSize, totalSizeUnits);
 
   return (
     <>
@@ -52,13 +54,15 @@ function App() {
           </Col>
         </Row>
 
-        <Row>
-          <Col className="d-flex justify-content-center mt-2">
-            It will take {getTImeToDownload(downloadRate, downloadRateUnits, totalSize, totalSizeUnits)} to download
-            {' '} {totalSize} {downloadUnits.find(du => du.value === totalSizeUnits)?.label}
-            {' '} at {downloadRate} {downloadUnits.find(du => du.value === downloadRateUnits)?.label}/s
-          </Col>
-        </Row>
+        {timeToDownload && (
+          <Row>
+            <Col className="d-flex justify-content-center mt-2">
+              It will take {timeToDownload.hours} hours {timeToDownload.minutes} minutes and {timeToDownload.seconds} seconds to download
+              {' '} {totalSize} {downloadUnits.find(du => du.value === totalSizeUnits)?.label}
+              {' '} at {downloadRate} {downloadUnits.find(du => du.value === downloadRateUnits)?.label}/s
+            </Col>
+          </Row>
+        )}
       </Container>
     </>
   );
